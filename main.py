@@ -180,14 +180,20 @@ class PlayerWindow(QtWidgets.QMainWindow):
             elif sys.platform == 'darwin':
                 self.mediaplayer.set_nsobject(int(self.videoframe.winId()))
             self.mediaplayer.play()
+            QtCore.QTimer.singleShot(500, lambda: self._set_vlc_volume())
             self.timer.start()
             self.is_paused = False
             self.visualizer.start()
+
+    def _set_vlc_volume(self):
+        self.mediaplayer.audio_set_volume(80)
+        print(f'Volume definido para: {self.mediaplayer.audio_get_volume()}')
 
     def play_media(self):
         if self.mediaplayer.play() == -1:
             QtWidgets.QMessageBox.warning(self, 'Erro', 'Não consegui tocar o arquivo.')
         else:
+            QtCore.QTimer.singleShot(500, lambda: self._set_vlc_volume())
             self.timer.start()
             self.is_paused = False
             self.visualizer.start()
